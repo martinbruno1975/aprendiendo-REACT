@@ -9,10 +9,13 @@
     "preview": "vite preview"
   },
   "devDependencies": {
+    "@playwright/test": "^1.49.1",
+    "@types/node": "^22.10.7",
     "vite": "^6.0.5"
   },
   "dependencies": {
     "@vitejs/plugin-react": "4.3.4",
+    "playwright": "^1.49.1",
     "react": "19.0.0",
     "react-dom": "19.0.0"
   }
