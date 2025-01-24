@@ -1,18 +1,18 @@
-export function ListOfMovies({ movies }) {
+function ListOfMovies({ movies }) {
   return (
-    <ul>
+    <ul className="movies">
       {movies.map((movie) => (
-        <li key={movie.imdbID}>
-          <h3>{movie.Title}</h3>
-          <p>{movie.Year}</p>
-          <img src={movie.Poster} alt={movie.Title} />
+        <li className="movie" key={movie.id}>
+          <h3>{movie.title}</h3>
+          <p>{movie.year}</p>
+          <img src={movie.poster} alt={movie.title} />
         </li>
       ))}
     </ul>
   );
 }
 
-export function NoMoviesResults() {
+function NoMoviesResults() {
   return <p>No se encontraron peliculas para esta busqueda</p>;
 }
 
