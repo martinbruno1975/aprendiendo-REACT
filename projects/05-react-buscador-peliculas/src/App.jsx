@@ -2,7 +2,8 @@
 import "./App.css";
 import { Movies } from "./components/Movies";
 import { useMovies } from "./hooks/useMovies";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
+import debounce from "just-debounce-it"
 
 function useSearch() {
   //forma controlada por react con un estado
@@ -38,8 +39,17 @@ function useSearch() {
 }
 
 function App() {
-  const { movies } = useMovies()
+  const [sort, setSort] = useState(false) 
+
   const {search, setSearch, error} = useSearch()
+  const { movies, loading, getMovies } = useMovies( {search, sort})
+  const debounceGetMovies = useCallback(
+    debounce(search => {
+    console.log('search',search)
+    getMovies({search})
+  }, 300)
+  ,[getMovies]
+) 
 
   //const inputRef = useRef() // el useRef persiste entre renders. La constante no cambia su valor cuando se vuelve a renderizar el componente
 
@@ -49,14 +59,19 @@ function App() {
     
     //const {query} = Object.fromEntries(new window.FormData(event.target)) 
     //const query = fields.get('query')
-    console.log({search})
+    getMovies({search})
 
     //const value = inputRef.current.value
   }
 
   const handleChange = (event) => {
-    if (event.target.value.startsWith(' ')) return
-    setSearch(event.target.value)
+    const newSearch = event.target.value
+    setSearch(newSearch)
+    debounceGetMovies(newSearch)
+  }
+
+  const handleSort = () => {
+    setSort(!sort)
   }
 
   return (
@@ -69,12 +84,15 @@ function App() {
             borderColor: error ? 'red' : 'transparent'
           }} 
           onChange={handleChange} value={search} name="query" placeholder="Advenger, The Matrix, Star Wars ..." />
+          <input type="checkbox" onClick={handleSort} checked={sort}/>
           <button type="submit">Buscar</button>
         </form>
         {error && <p style={{color:'red'}}>{error}</p>}
       </header>
       <main>
-        <Movies movies={movies} />
+        {
+          loading ? <p>Cargando ...</p> : <Movies movies={movies} />
+        }
       </main>
     </div>
   );
